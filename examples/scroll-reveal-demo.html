@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EaseMotion CSS — Scroll Reveal Demo</title>
+  <meta name="description"
+    content="Interactive demo of EaseMotion CSS scroll reveal utility classes using the Intersection Observer API." />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="../docs/assets/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../docs/assets/favicon-16x16.png" />
+  <link rel="shortcut icon" href="../docs/assets/favicon.ico" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <!-- EaseMotion CSS — core first -->
+  <link rel="stylesheet" href="../core/variables.css" />
+  <link rel="stylesheet" href="../core/base.css" />
+  <link rel="stylesheet" href="../core/animations.css" />
+  <link rel="stylesheet" href="../core/utilities.css" />
+
+  <!-- Scroll Reveal utilities -->
+  <link rel="stylesheet" href="../easemotion/scroll-reveal.css" />
+
+  <style>
+    /* ── Page-level design ───────────────────────────────────── */
+    :root {
+      --page-bg:       #080c14;
+      --page-text:     #e8edf5;
+      --page-muted:    rgba(232, 237, 245, 0.55);
+      --hero-gradient: linear-gradient(135deg, #6c63ff 0%, #a78bfa 50%, #38bdf8 100%);
+      --card-bg:       rgba(255, 255, 255, 0.04);
+      --card-border:   rgba(255, 255, 255, 0.08);
+      --pill-bg:       rgba(108, 99, 255, 0.18);
+      --pill-color:    #a78bfa;
+      --divider:       rgba(108, 99, 255, 0.35);
+      --nav-bg:        rgba(8, 12, 20, 0.80);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--page-bg);
+      color: var(--page-text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── Sticky nav ──────────────────────────────────────────── */
+    .sr-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sr-nav-logo {
+      font-size: 1.05rem;
+      font-weight: 700;
+      background: var(--hero-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+
+    .sr-nav-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--pill-bg);
+      color: var(--pill-color);
+      padding: 0.3rem 0.75rem;
+      border-radius: 9999px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── Hero ────────────────────────────────────────────────── */
+    .sr-hero {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sr-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(108, 99, 255, 0.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .sr-hero-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pill-color);
+      background: var(--pill-bg);
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      margin-bottom: 1.5rem;
+    }
+
+    .sr-hero h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      background: var(--hero-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+    }
+
+    .sr-hero p {
+      max-width: 52ch;
+      font-size: 1.1rem;
+      color: var(--page-muted);
+      margin-bottom: 2.5rem;
+    }
+
+    .sr-hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .sr-btn {
+      padding: 0.75rem 1.75rem;
+      border-radius: 0.6rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sr-btn:hover { transform: translateY(-2px); }
+
+    .sr-btn-primary {
+      background: linear-gradient(135deg, #6c63ff, #a78bfa);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(108, 99, 255, 0.4);
+    }
+
+    .sr-btn-primary:hover { box-shadow: 0 8px 28px rgba(108, 99, 255, 0.55); }
+
+    .sr-btn-outline {
+      background: transparent;
+      color: var(--page-text);
+      border: 1px solid var(--card-border);
+    }
+
+    .sr-btn-outline:hover {
+      background: var(--card-bg);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ── Section layout ──────────────────────────────────────── */
+    .sr-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+
+    .sr-divider {
+      width: 80px;
+      height: 3px;
+      background: var(--hero-gradient);
+      border-radius: 9999px;
+      margin: 0 auto 1.25rem;
+    }
+
+    .sr-section-label {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--pill-color);
+      margin-bottom: 0.75rem;
+    }
+
+    .sr-section-title {
+      text-align: center;
+      font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .sr-section-desc {
+      text-align: center;
+      max-width: 56ch;
+      margin: 0 auto 4rem;
+      color: var(--page-muted);
+      font-size: 1rem;
+    }
+
+    /* ── Demo cards ──────────────────────────────────────────── */
+    .sr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .sr-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 2rem 1.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sr-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--hero-gradient);
+      opacity: 0.6;
+    }
+
+    .sr-card-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .sr-card-class {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--pill-color);
+      background: var(--pill-bg);
+      padding: 0.25rem 0.6rem;
+      border-radius: 0.35rem;
+      margin-bottom: 0.75rem;
+      display: inline-block;
+    }
+
+    .sr-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .sr-card p {
+      font-size: 0.875rem;
+      color: var(--page-muted);
+      line-height: 1.65;
+    }
+
+    /* ── Banner-style demos ──────────────────────────────────── */
+    .sr-banner-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .sr-banner-grid { grid-template-columns: 1fr; }
+    }
+
+    .sr-banner {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .sr-banner h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .sr-banner p {
+      font-size: 0.875rem;
+      color: var(--page-muted);
+    }
+
+    /* ── Stagger demo section ────────────────────────────────── */
+    .sr-stagger-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .sr-stagger-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 0.75rem;
+      padding: 1.5rem 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-align: center;
+      min-width: 120px;
+    }
+
+    /* ── Full-width highlight strip ─────────────────────────── */
+    .sr-highlight {
+      background: linear-gradient(135deg,
+        rgba(108, 99, 255, 0.12) 0%,
+        rgba(167, 139, 250, 0.08) 50%,
+        rgba(56, 189, 248, 0.12) 100%);
+      border-top: 1px solid var(--card-border);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .sr-highlight-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .sr-highlight-inner { grid-template-columns: 1fr; gap: 2rem; }
+    }
+
+    .sr-highlight-text h2 {
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .sr-highlight-text p {
+      color: var(--page-muted);
+      font-size: 0.975rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Code snippet block ──────────────────────────────────── */
+    .sr-code {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--card-border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+
+    .sr-code pre {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: #c9d1d9;
+      white-space: pre;
+    }
+
+    .sr-code .kw { color: #ff7b72; }
+    .sr-code .cls { color: #79c0ff; }
+    .sr-code .str { color: #a5d6ff; }
+    .sr-code .cmt { color: #8b949e; }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    .sr-footer {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--page-muted);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .sr-footer a {
+      color: var(--pill-color);
+      text-decoration: none;
+    }
+
+    .sr-footer a:hover { text-decoration: underline; }
+
+    /* ── Scroll hint ─────────────────────────────────────────── */
+    .sr-scroll-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 3rem;
+      color: var(--page-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      animation: ease-kf-bounce-gentle 2.4s ease-in-out infinite;
+    }
+
+    @keyframes ease-kf-bounce-gentle {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50% { transform: translateY(8px); opacity: 1; }
+    }
+
+    .sr-scroll-hint svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--pill-color);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav class="sr-nav" role="navigation" aria-label="Demo navigation">
+    <a href="../examples/demo.html" class="sr-nav-logo" id="sr-nav-logo">
+      EaseMotion CSS
+    </a>
+    <span class="sr-nav-tag">Scroll Reveal</span>
+  </nav>
+
+  <!-- ── Hero ───────────────────────────────────────────────── -->
+  <header class="sr-hero" id="sr-hero" role="banner">
+    <p class="sr-hero-eyebrow ease-fade-in">New Feature</p>
+    <h1 class="ease-slide-up">Scroll Reveal<br />Animations</h1>
+    <p class="ease-slide-up" style="animation-delay: 120ms">
+      Seven GPU-friendly utility classes powered by the Intersection Observer API.
+      Zero dependencies. Animate once, forget the rest.
+    </p>
+    <div class="sr-hero-actions ease-slide-up" style="animation-delay: 240ms">
+      <a href="#demos" class="sr-btn sr-btn-primary" id="sr-hero-demos-btn">
+        ↓ See Demos
+      </a>
+      <a href="https://github.com/jayasankartanguturi/EaseMotion-css" class="sr-btn sr-btn-outline"
+        id="sr-hero-github-btn" target="_blank" rel="noopener">
+        GitHub ↗
+      </a>
+    </div>
+
+    <div class="sr-scroll-hint" aria-hidden="true">
+      SCROLL DOWN
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </div>
+  </header>
+
+  <!-- ── Individual class demos ─────────────────────────────── -->
+  <section class="sr-section" id="demos" aria-labelledby="sr-demos-title">
+    <div class="sr-divider ease-reveal-fade" aria-hidden="true"></div>
+    <p class="sr-section-label ease-reveal-fade ease-reveal-delay-1">Utility Classes</p>
+    <h2 class="sr-section-title ease-reveal-up ease-reveal-delay-2" id="sr-demos-title">
+      Seven Ways to Reveal
+    </h2>
+    <p class="sr-section-desc ease-reveal-up ease-reveal-delay-3">
+      Scroll down to watch each element animate into view exactly once.
+      Mix and match with stagger delays for expressive sequences.
+    </p>
+
+    <div class="sr-grid">
+
+      <!-- ease-reveal-fade -->
+      <div class="sr-card ease-reveal-fade ease-reveal-delay-1" id="demo-card-fade">
+        <span class="sr-card-icon" aria-hidden="true">🌫️</span>
+        <span class="sr-card-class">.ease-reveal-fade</span>
+        <h3>Fade</h3>
+        <p>Smoothly fades in with a subtle scale, giving a clean, minimal entrance effect.</p>
+      </div>
+
+      <!-- ease-reveal-up -->
+      <div class="sr-card ease-reveal-up ease-reveal-delay-2" id="demo-card-up">
+        <span class="sr-card-icon" aria-hidden="true">⬆️</span>
+        <span class="sr-card-class">.ease-reveal-up</span>
+        <h3>Slide Up</h3>
+        <p>Reveals from below — the element rises upward while fading in from the bottom.</p>
+      </div>
+
+      <!-- ease-reveal-down -->
+      <div class="sr-card ease-reveal-down ease-reveal-delay-3" id="demo-card-down">
+        <span class="sr-card-icon" aria-hidden="true">⬇️</span>
+        <span class="sr-card-class">.ease-reveal-down</span>
+        <h3>Slide Down</h3>
+        <p>Reveals from above — drops downward while fading in from the top of the page.</p>
+      </div>
+
+      <!-- ease-reveal-left -->
+      <div class="sr-card ease-reveal-left ease-reveal-delay-1" id="demo-card-left">
+        <span class="sr-card-icon" aria-hidden="true">⬅️</span>
+        <span class="sr-card-class">.ease-reveal-left</span>
+        <h3>Slide Left</h3>
+        <p>Sweeps in from the left — horizontal translation with opacity for a dynamic feel.</p>
+      </div>
+
+      <!-- ease-reveal-right -->
+      <div class="sr-card ease-reveal-right ease-reveal-delay-2" id="demo-card-right">
+        <span class="sr-card-icon" aria-hidden="true">➡️</span>
+        <span class="sr-card-class">.ease-reveal-right</span>
+        <h3>Slide Right</h3>
+        <p>Sweeps in from the right — pairs perfectly with ease-reveal-left for mirrored effects.</p>
+      </div>
+
+      <!-- ease-reveal-zoom -->
+      <div class="sr-card ease-reveal-zoom ease-reveal-delay-3" id="demo-card-zoom">
+        <span class="sr-card-icon" aria-hidden="true">🔍</span>
+        <span class="sr-card-class">.ease-reveal-zoom</span>
+        <h3>Zoom</h3>
+        <p>Scales up from 80 % to full size with a spring easing for a satisfying pop effect.</p>
+      </div>
+
+      <!-- ease-reveal-rotate -->
+      <div class="sr-card ease-reveal-rotate ease-reveal-delay-1" id="demo-card-rotate">
+        <span class="sr-card-icon" aria-hidden="true">🌀</span>
+        <span class="sr-card-class">.ease-reveal-rotate</span>
+        <h3>Rotate</h3>
+        <p>Rotates in from −6° while fading, adding energy and personality to content blocks.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Banner demos (left / right pairing) ───────────────── -->
+  <div class="sr-highlight" id="sr-banner-section">
+    <div class="sr-highlight-inner">
+
+      <div class="sr-highlight-text">
+        <h2 class="ease-reveal-left" id="sr-highlight-heading">Built for Performance</h2>
+        <p class="ease-reveal-left ease-reveal-delay-1">
+          Only <code>opacity</code> and <code>transform</code> are animated — the two
+          GPU-composited properties. No layout recalculations, no jank.
+        </p>
+        <p class="ease-reveal-left ease-reveal-delay-2">
+          Elements start hidden via CSS and receive <code>.ease-reveal-active</code> when the
+          Intersection Observer fires. The observer is immediately unregistered afterwards to
+          keep memory usage near zero.
+        </p>
+        <a href="../core/scroll-reveal.js" class="sr-btn sr-btn-outline ease-reveal-left ease-reveal-delay-3"
+          id="sr-view-js-btn" target="_blank" rel="noopener" style="margin-top: 1rem; width: fit-content;">
+          View scroll-reveal.js ↗
+        </a>
+      </div>
+
+      <div class="ease-reveal-right" id="sr-code-block">
+        <div class="sr-code" aria-label="Code example">
+          <pre><span class="cmt">&lt;!-- Add a class — that's it --&gt;</span>
+<span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"ease-reveal-up"</span><span class="kw">&gt;</span>
+  Reveals from below
+<span class="kw">&lt;/div&gt;</span>
+
+<span class="cmt">&lt;!-- Combine with stagger delays --&gt;</span>
+<span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"ease-reveal-fade ease-reveal-delay-1"</span><span class="kw">&gt;</span>
+  First item
+<span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"ease-reveal-fade ease-reveal-delay-2"</span><span class="kw">&gt;</span>
+  Second item
+<span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"ease-reveal-fade ease-reveal-delay-3"</span><span class="kw">&gt;</span>
+  Third item
+<span class="kw">&lt;/div&gt;</span>
+
+<span class="cmt">&lt;!-- Load the observer once --&gt;</span>
+<span class="kw">&lt;script</span> <span class="cls">src</span>=<span class="str">"core/scroll-reveal.js"</span><span class="kw">&gt;&lt;/script&gt;</span></pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Stagger demo ───────────────────────────────────────── -->
+  <section class="sr-section" id="sr-stagger-section" aria-labelledby="sr-stagger-title">
+    <p class="sr-section-label ease-reveal-fade">Stagger Helpers</p>
+    <h2 class="sr-section-title ease-reveal-up ease-reveal-delay-1" id="sr-stagger-title">
+      Cascade Your Animations
+    </h2>
+    <p class="sr-section-desc ease-reveal-up ease-reveal-delay-2">
+      Combine any reveal class with <code>.ease-reveal-delay-1</code> through
+      <code>.ease-reveal-delay-5</code> to stagger siblings by 100 ms steps.
+    </p>
+
+    <div class="sr-stagger-row" role="list" aria-label="Stagger animation demo">
+      <div class="sr-stagger-item ease-reveal-zoom ease-reveal-delay-1" role="listitem" id="stagger-1">1</div>
+      <div class="sr-stagger-item ease-reveal-zoom ease-reveal-delay-2" role="listitem" id="stagger-2">2</div>
+      <div class="sr-stagger-item ease-reveal-zoom ease-reveal-delay-3" role="listitem" id="stagger-3">3</div>
+      <div class="sr-stagger-item ease-reveal-zoom ease-reveal-delay-4" role="listitem" id="stagger-4">4</div>
+      <div class="sr-stagger-item ease-reveal-zoom ease-reveal-delay-5" role="listitem" id="stagger-5">5</div>
+    </div>
+  </section>
+
+  <!-- ── Mixed-direction banner demo ───────────────────────── -->
+  <section class="sr-section" id="sr-directions-section" aria-labelledby="sr-directions-title">
+    <p class="sr-section-label ease-reveal-fade">Direction Demo</p>
+    <h2 class="sr-section-title ease-reveal-up ease-reveal-delay-1" id="sr-directions-title">
+      All Directions at Once
+    </h2>
+    <p class="sr-section-desc ease-reveal-up ease-reveal-delay-2">
+      Scroll slowly and watch each banner animate from a different direction.
+    </p>
+
+    <div class="sr-banner-grid">
+      <div class="sr-banner ease-reveal-up" id="demo-banner-up">
+        <h3>↑ ease-reveal-up</h3>
+        <p>Rises from below</p>
+      </div>
+      <div class="sr-banner ease-reveal-down" id="demo-banner-down">
+        <h3>↓ ease-reveal-down</h3>
+        <p>Drops from above</p>
+      </div>
+      <div class="sr-banner ease-reveal-left" id="demo-banner-left">
+        <h3>← ease-reveal-left</h3>
+        <p>Sweeps from the left</p>
+      </div>
+      <div class="sr-banner ease-reveal-right" id="demo-banner-right">
+        <h3>→ ease-reveal-right</h3>
+        <p>Sweeps from the right</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="sr-footer ease-reveal-fade" id="sr-footer" role="contentinfo">
+    <p>
+      EaseMotion CSS — Scroll Reveal Utilities ·
+      <a href="https://github.com/jayasankartanguturi/EaseMotion-css" target="_blank" rel="noopener">
+        GitHub
+      </a>
+      ·
+      <a href="../README.md">README</a>
+    </p>
+    <p style="margin-top: 0.5rem; opacity: 0.5;">
+      MIT License · GPU-friendly · Zero dependencies
+    </p>
+  </footer>
+
+  <!-- ── Scroll Reveal Observer ─────────────────────────────── -->
+  <script src="../core/scroll-reveal.js"></script>
+
+</body>
+
+</html>

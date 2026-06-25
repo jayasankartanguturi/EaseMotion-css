@@ -99,6 +99,7 @@
         <li><a href="#getting-started">Getting Started</a></li>
         <li><a href="#utilities">Utilities</a></li>
         <li><a href="#animations">Animations</a></li>
+        <li><a href="#scroll-reveal">Scroll Reveal</a></li>
         <li><a href="animations-preview.html">Animation Preview</a></li>
         <li>
           <a href="animation-combo.html" class="ease-btn ease-nav-button"
@@ -206,6 +207,7 @@
             <li><a href="#dark-mode">Dark Mode</a></li>
             <li><a href="#utilities">Utilities</a></li>
             <li><a href="#animations">Animations</a></li>
+            <li><a href="#scroll-reveal">Scroll Reveal</a></li>
             <li><a href="animation-combo.html">Animation Builder</a></li>
           </ul>
         </div>
@@ -615,6 +617,99 @@
   &lt;option&gt;Option 2&lt;/option&gt;
 &lt;/select&gt;</code></pre>
           </div>
+        </section>
+
+        <hr class="docs-divider" />
+
+        <section id="scroll-reveal" class="docs-section">
+          <h2 class="docs-h2">Scroll Reveal Utilities</h2>
+          <p class="docs-p">
+            Seven GPU-friendly utility classes that animate elements into view as the user scrolls,
+            powered by the <strong>Intersection Observer API</strong>.
+            No external libraries. Animate-once semantics — the observer unregisters itself
+            after each element is revealed.
+          </p>
+
+          <div class="docs-info">
+            <span class="docs-info-icon" aria-hidden="true">💡</span>
+            <div>
+              Drop <code>core/scroll-reveal.js</code> before your closing <code>&lt;/body&gt;</code> tag.
+              The CSS is already bundled in <code>easemotion.css</code>.
+            </div>
+          </div>
+
+          <h3 class="docs-h3">Setup</h3>
+          <div class="docs-code">
+            <span class="docs-code-lang">html</span>
+            <pre><code>&lt;!-- CSS is bundled — load easemotion.css as normal --&gt;
+&lt;link rel="stylesheet" href="easemotion.css" /&gt;
+
+&lt;!-- Intersection Observer driver — drop before &lt;/body&gt; --&gt;
+&lt;script src="core/scroll-reveal.js"&gt;&lt;/script&gt;</code></pre>
+          </div>
+
+          <h3 class="docs-h3">Available Classes</h3>
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Effect</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>ease-reveal-fade</code></td>
+                <td>Fades in with a subtle scale (opacity + scale 0.97 → 1)</td>
+              </tr>
+              <tr>
+                <td><code>ease-reveal-up</code></td>
+                <td>Rises upward (translateY 40 px → 0) while fading in</td>
+              </tr>
+              <tr>
+                <td><code>ease-reveal-down</code></td>
+                <td>Drops downward (translateY −40 px → 0) while fading in</td>
+              </tr>
+              <tr>
+                <td><code>ease-reveal-left</code></td>
+                <td>Sweeps from the left (translateX −50 px → 0)</td>
+              </tr>
+              <tr>
+                <td><code>ease-reveal-right</code></td>
+                <td>Sweeps from the right (translateX +50 px → 0)</td>
+              </tr>
+              <tr>
+                <td><code>ease-reveal-zoom</code></td>
+                <td>Zooms in from scale(0.8) with bounce easing</td>
+              </tr>
+              <tr>
+                <td><code>ease-reveal-rotate</code></td>
+                <td>Rotates from −6° while fading in</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="docs-h3">Example</h3>
+          <div class="docs-code">
+            <span class="docs-code-lang">html</span>
+            <pre><code>&lt;div class="ease-reveal-up"&gt;Welcome to EaseMotion CSS&lt;/div&gt;
+
+&lt;section class="ease-reveal-fade"&gt;Smooth Scroll Animation&lt;/section&gt;
+
+&lt;div class="ease-reveal-left"&gt;Reveal from Left&lt;/div&gt;
+
+&lt;!-- Stagger siblings with delay helpers --&gt;
+&lt;div class="ease-reveal-fade ease-reveal-delay-1"&gt;Card 1&lt;/div&gt;
+&lt;div class="ease-reveal-fade ease-reveal-delay-2"&gt;Card 2&lt;/div&gt;
+&lt;div class="ease-reveal-fade ease-reveal-delay-3"&gt;Card 3&lt;/div&gt;
+
+&lt;script src="core/scroll-reveal.js"&gt;&lt;/script&gt;</code></pre>
+          </div>
+
+          <p class="docs-p">
+            See the
+            <a href="../examples/scroll-reveal-demo.html">interactive scroll reveal demo</a>
+            for a live demonstration of all seven classes and stagger helpers.
+          </p>
         </section>
 
         <hr class="docs-divider" />

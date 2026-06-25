@@ -155,6 +155,10 @@
         background: #e0f2fe;
         color: #0369a1;
       }
+      .badge-reveal {
+        background: #ede9fe;
+        color: #6c63ff;
+      }
       .badge-utility {
         background: #f1f5f9;
         color: #475569;
@@ -207,6 +211,7 @@
         <button class="filter-btn" data-filter="button">Button</button>
         <button class="filter-btn" data-filter="card">Card</button>
         <button class="filter-btn" data-filter="animation">Animation</button>
+        <button class="filter-btn" data-filter="reveal">Scroll Reveal</button>
         <button class="filter-btn" data-filter="utility">Utility</button>
       </div>
     </div>
@@ -502,37 +507,67 @@
         {
           name: "ease-reveal",
           cat: "animation",
-          desc: "Scroll-triggered fade and slide up using animation-timeline view()",
-        },
-        {
-          name: "ease-reveal-up",
-          cat: "animation",
-          desc: "Scroll-triggered slide up reveal",
-        },
-        {
-          name: "ease-reveal-down",
-          cat: "animation",
-          desc: "Scroll-triggered slide down reveal",
-        },
-        {
-          name: "ease-reveal-left",
-          cat: "animation",
-          desc: "Scroll-triggered slide left reveal",
-        },
-        {
-          name: "ease-reveal-right",
-          cat: "animation",
-          desc: "Scroll-triggered slide right reveal",
+          desc: "Legacy scroll-triggered reveal using animation-timeline view() — see ease-reveal-* for the Intersection Observer API variant",
         },
         {
           name: "ease-reveal-fade",
-          cat: "animation",
-          desc: "Scroll-triggered fade-only reveal",
+          cat: "reveal",
+          desc: "Scroll reveal: fades element in with a subtle scale (opacity + scale). Requires core/scroll-reveal.js.",
+        },
+        {
+          name: "ease-reveal-up",
+          cat: "reveal",
+          desc: "Scroll reveal: element rises upward (translateY +40px→0) while fading in. Requires core/scroll-reveal.js.",
+        },
+        {
+          name: "ease-reveal-down",
+          cat: "reveal",
+          desc: "Scroll reveal: element drops downward (translateY -40px→0) while fading in. Requires core/scroll-reveal.js.",
+        },
+        {
+          name: "ease-reveal-left",
+          cat: "reveal",
+          desc: "Scroll reveal: sweeps in from the left (translateX -50px→0). Requires core/scroll-reveal.js.",
+        },
+        {
+          name: "ease-reveal-right",
+          cat: "reveal",
+          desc: "Scroll reveal: sweeps in from the right (translateX +50px→0). Requires core/scroll-reveal.js.",
         },
         {
           name: "ease-reveal-zoom",
-          cat: "animation",
-          desc: "Scroll-triggered zoom in reveal",
+          cat: "reveal",
+          desc: "Scroll reveal: zooms in from scale(0.8) with bounce easing. Requires core/scroll-reveal.js.",
+        },
+        {
+          name: "ease-reveal-rotate",
+          cat: "reveal",
+          desc: "Scroll reveal: rotates in from -6deg while fading. Requires core/scroll-reveal.js.",
+        },
+        {
+          name: "ease-reveal-delay-1",
+          cat: "reveal",
+          desc: "Stagger delay helper: adds 100ms transition-delay to a scroll reveal element.",
+        },
+        {
+          name: "ease-reveal-delay-2",
+          cat: "reveal",
+          desc: "Stagger delay helper: adds 200ms transition-delay to a scroll reveal element.",
+        },
+        {
+          name: "ease-reveal-delay-3",
+          cat: "reveal",
+          desc: "Stagger delay helper: adds 300ms transition-delay to a scroll reveal element.",
+        },
+        {
+          name: "ease-reveal-delay-4",
+          cat: "reveal",
+          desc: "Stagger delay helper: adds 400ms transition-delay to a scroll reveal element.",
+        },
+        {
+          name: "ease-reveal-delay-5",
+          cat: "reveal",
+          desc: "Stagger delay helper: adds 500ms transition-delay to a scroll reveal element.",
         },
         {
           name: "ease-blur-in",
@@ -663,6 +698,7 @@
         button: "Buttons",
         card: "Cards",
         animation: "Animations",
+        reveal: "Scroll Reveal",
         utility: "Utilities",
       };
       const order = [
@@ -672,6 +708,7 @@
         "button",
         "card",
         "animation",
+        "reveal",
         "utility",
       ];
       let currentFilter = "all";

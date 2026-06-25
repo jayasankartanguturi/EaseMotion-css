@@ -65,6 +65,7 @@ EaseMotion CSS lets you build polished interfaces with readable class names such
 - [Maintainer](#maintainer)
 - [Changelog](#changelog)
 - [License](#license)
+- [Scroll Reveal Utilities](#scroll-reveal-utilities)
 
 ---
 
@@ -1026,3 +1027,201 @@ Built with care &nbsp;·&nbsp; Zero dependencies &nbsp;·&nbsp; Animation-first 
 ## Accessibility
 
 EaseMotion CSS supports the `prefers-reduced-motion` media query to respect users who prefer reduced motion and reduce animation-related discomfort. When enabled at the operating system level, animations and transitions are minimized to provide a more accessible experience.
+
+---
+
+## Scroll Reveal Utilities
+
+Scroll Reveal Utilities let you animate elements into view as the user scrolls. Powered by the **Intersection Observer API** — no external libraries, no jQuery, no polling loops.
+
+> **How it works:** Elements with a reveal class start hidden. When they enter the viewport, the observer adds `.ease-reveal-active`, triggering a smooth CSS transition. The observer unregisters itself immediately afterwards (animate-once semantics).
+
+### Setup
+
+Include the CSS (already bundled in `easemotion.css`) and the lightweight observer script:
+
+```html
+<!-- CSS is bundled — just make sure you load easemotion.css -->
+<link rel="stylesheet" href="easemotion.css" />
+
+<!-- Drop the observer script before </body> -->
+<script src="core/scroll-reveal.js"></script>
+```
+
+---
+
+### 1. `ease-reveal-fade`
+
+**Description:** Fades the element in with a subtle scale — a clean, minimal entrance.
+
+**CSS Class:** `.ease-reveal-fade`
+
+**Example HTML:**
+```html
+<section class="ease-reveal-fade">
+  Smooth Scroll Animation
+</section>
+```
+
+**Expected Visual Effect:** The element starts invisible (opacity 0, scale 97%). On scroll, it transitions to fully visible (opacity 1, scale 100%).
+
+---
+
+### 2. `ease-reveal-up`
+
+**Description:** Reveals from the bottom — the element rises upward while fading in.
+
+**CSS Class:** `.ease-reveal-up`
+
+**Example HTML:**
+```html
+<div class="ease-reveal-up">
+  Welcome to EaseMotion CSS
+</div>
+```
+
+**Expected Visual Effect:** Element starts 40 px below its final position and translates upward while fading in.
+
+---
+
+### 3. `ease-reveal-down`
+
+**Description:** Reveals from the top — the element drops downward while fading in.
+
+**CSS Class:** `.ease-reveal-down`
+
+**Example HTML:**
+```html
+<header class="ease-reveal-down">
+  Page Header
+</header>
+```
+
+**Expected Visual Effect:** Element starts 40 px above its final position and translates downward while fading in.
+
+---
+
+### 4. `ease-reveal-left`
+
+**Description:** Sweeps in from the left — horizontal slide with opacity.
+
+**CSS Class:** `.ease-reveal-left`
+
+**Example HTML:**
+```html
+<div class="ease-reveal-left">
+  Reveal from Left
+</div>
+```
+
+**Expected Visual Effect:** Element starts 50 px to the left of its final position and slides into place while fading in.
+
+---
+
+### 5. `ease-reveal-right`
+
+**Description:** Sweeps in from the right — mirrors `ease-reveal-left`.
+
+**CSS Class:** `.ease-reveal-right`
+
+**Example HTML:**
+```html
+<aside class="ease-reveal-right">
+  Sidebar Content
+</aside>
+```
+
+**Expected Visual Effect:** Element starts 50 px to the right of its final position and slides into place while fading in.
+
+---
+
+### 6. `ease-reveal-zoom`
+
+**Description:** Reveals using scale — zooms in from 80 % with a spring bounce easing.
+
+**CSS Class:** `.ease-reveal-zoom`
+
+**Example HTML:**
+```html
+<div class="ease-reveal-zoom">
+  Zoom In Effect
+</div>
+```
+
+**Expected Visual Effect:** Element scales from 0.8 → 1.0 while fading in, using a slight overshoot (bounce) easing.
+
+---
+
+### 7. `ease-reveal-rotate`
+
+**Description:** Reveals using a slight rotation — rotates from −6° while fading in.
+
+**CSS Class:** `.ease-reveal-rotate`
+
+**Example HTML:**
+```html
+<blockquote class="ease-reveal-rotate">
+  "EaseMotion makes animation easy."
+</blockquote>
+```
+
+**Expected Visual Effect:** Element starts slightly rotated (−6°, scale 0.97) and eases into its natural orientation while fading in.
+
+---
+
+### Stagger Delay Helpers
+
+Chain sibling reveals with stagger helpers to create cascading effects:
+
+| Class | Delay |
+|---|---|
+| `.ease-reveal-delay-1` | 100 ms |
+| `.ease-reveal-delay-2` | 200 ms |
+| `.ease-reveal-delay-3` | 300 ms |
+| `.ease-reveal-delay-4` | 400 ms |
+| `.ease-reveal-delay-5` | 500 ms |
+
+**Example — staggered cards:**
+```html
+<div class="ease-reveal-fade ease-reveal-delay-1">Card 1</div>
+<div class="ease-reveal-fade ease-reveal-delay-2">Card 2</div>
+<div class="ease-reveal-fade ease-reveal-delay-3">Card 3</div>
+
+<script src="core/scroll-reveal.js"></script>
+```
+
+---
+
+### Accessibility — Reduced Motion
+
+All reveal animations are automatically disabled when the user has enabled **Reduce Motion** in their OS or browser settings:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  [class*="ease-reveal-"],
+  [class*="ease-reveal-"].ease-reveal-active {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+```
+
+The observer script also detects `prefers-reduced-motion` and immediately makes all elements visible without any transition.
+
+---
+
+### Demo
+
+Open [`examples/scroll-reveal-demo.html`](./examples/scroll-reveal-demo.html) in your browser for a fully interactive demonstration of all seven utility classes, stagger helpers, and mixed-direction layouts.
+
+---
+
+### File Reference
+
+| File | Purpose |
+|---|---|
+| `easemotion/scroll-reveal.css` | All seven utility classes + stagger delays + reduced-motion |
+| `core/scroll-reveal.js` | Intersection Observer driver |
+| `examples/scroll-reveal-demo.html` | Interactive demo page |
+
