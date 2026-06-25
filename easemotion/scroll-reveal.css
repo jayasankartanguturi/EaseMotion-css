@@ -1,0 +1,191 @@
+/* ============================================================
+   EaseMotion CSS — scroll-reveal.css
+   Scroll-triggered reveal utility classes.
+   Uses the Intersection Observer API (see core/scroll-reveal.js).
+
+   Pattern
+   ───────
+   • Add one of the ease-reveal-* classes to any element.
+   • Elements start in their hidden state (opacity: 0 + transform).
+   • When the Intersection Observer fires, the .ease-reveal-active
+     class is appended, transitioning the element to its visible state.
+   • The transition relies on CSS custom properties from variables.css
+     so it automatically picks up any user overrides.
+
+   GPU-friendly: only `opacity` and `transform` are animated.
+   No layout-triggering properties (width, height, top, etc.) are used.
+   ============================================================ */
+
+@layer easemotion-utilities {
+  /* ── Required keyframes (new, not duplicated elsewhere) ─────── */
+
+  @keyframes ease-kf-reveal-fade {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes ease-kf-reveal-rotate {
+    from {
+      opacity: 0;
+      transform: rotate(-6deg) scale(0.97);
+    }
+
+    to {
+      opacity: 1;
+      transform: rotate(0deg) scale(1);
+    }
+  }
+
+  /* ── Base hidden state shared by all reveal classes ─────────── */
+
+  /* Specificity is kept intentionally low so modifiers can override. */
+
+  [class*="ease-reveal-"] {
+    /* Elements are invisible before the observer fires */
+    opacity: 0;
+
+    /* Ensure the element occupies space so the observer can detect it */
+    will-change: opacity, transform;
+  }
+
+  /* ── 1. ease-reveal-fade ────────────────────────────────────── */
+
+  /*  Fade in with a subtle scale. No directional movement.         */
+
+  .ease-reveal-fade {
+    transform: scale(0.97);
+    transition:
+      opacity var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+      transform var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .ease-reveal-fade.ease-reveal-active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ── 2. ease-reveal-up ──────────────────────────────────────── */
+
+  /*  Reveal from below — element rises upward while fading in.    */
+
+  .ease-reveal-up {
+    transform: translate3d(0, 40px, 0);
+    transition:
+      opacity var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+      transform var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .ease-reveal-up.ease-reveal-active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* ── 3. ease-reveal-down ────────────────────────────────────── */
+
+  /*  Reveal from above — element drops downward while fading in.  */
+
+  .ease-reveal-down {
+    transform: translate3d(0, -40px, 0);
+    transition:
+      opacity var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+      transform var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .ease-reveal-down.ease-reveal-active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* ── 4. ease-reveal-left ────────────────────────────────────── */
+
+  /*  Reveal from the left — slides in from the left side.         */
+
+  .ease-reveal-left {
+    transform: translate3d(-50px, 0, 0);
+    transition:
+      opacity var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+      transform var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .ease-reveal-left.ease-reveal-active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* ── 5. ease-reveal-right ───────────────────────────────────── */
+
+  /*  Reveal from the right — slides in from the right side.       */
+
+  .ease-reveal-right {
+    transform: translate3d(50px, 0, 0);
+    transition:
+      opacity var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+      transform var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .ease-reveal-right.ease-reveal-active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* ── 6. ease-reveal-zoom ────────────────────────────────────── */
+
+  /*  Reveal using scale — zooms in while fading.                  */
+
+  .ease-reveal-zoom {
+    transform: scale(0.8);
+    transition:
+      opacity var(--ease-speed-slow, 600ms) var(--ease-ease-bounce, cubic-bezier(0.34, 1.56, 0.64, 1)),
+      transform var(--ease-speed-slow, 600ms) var(--ease-ease-bounce, cubic-bezier(0.34, 1.56, 0.64, 1));
+  }
+
+  .ease-reveal-zoom.ease-reveal-active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ── 7. ease-reveal-rotate ──────────────────────────────────── */
+
+  /*  Reveal using a slight rotation — rotates in while fading.    */
+
+  .ease-reveal-rotate {
+    transform: rotate(-6deg) scale(0.97);
+    transition:
+      opacity var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+      transform var(--ease-speed-slow, 600ms) var(--ease-ease, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .ease-reveal-rotate.ease-reveal-active {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  /* ── Stagger delay helpers ───────────────────────────────────── */
+
+  /*  Apply these alongside any ease-reveal-* class to stagger     */
+
+  /*  sibling animations. e.g. class="ease-reveal-up ease-reveal-delay-2" */
+
+  .ease-reveal-delay-1 { transition-delay: 100ms; }
+  .ease-reveal-delay-2 { transition-delay: 200ms; }
+  .ease-reveal-delay-3 { transition-delay: 300ms; }
+  .ease-reveal-delay-4 { transition-delay: 400ms; }
+  .ease-reveal-delay-5 { transition-delay: 500ms; }
+
+  /* ── Reduced-motion: skip animation, show immediately ───────── */
+
+  @media (prefers-reduced-motion: reduce) {
+    [class*="ease-reveal-"],
+    [class*="ease-reveal-"].ease-reveal-active {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
